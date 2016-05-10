@@ -1,0 +1,160 @@
+1. Создание таблицы students
+CREATE TABLE students (
+id_student INT(4) AUTO_INCREMENT,
+name VARCHAR(35) NOT NULL,
+surname VARCHAR(35) NOT NULL,
+age INT NOT NULL,
+id_group INT(4) NOT NULL,
+PRIMARY KEY (id_student)
+)
+CHARACTER SET utf8 COLLATE utf8_general_ci
+
+2. Создание таблицы groups
+CREATE TABLE groups (
+id_group INT AUTO_INCREMENT,
+name VARCHAR(35) NOT NULL,
+num_of_students INT,
+PRIMARY KEY (id_group)
+)
+CHARACTER SET utf8 COLLATE utf8_general_ci
+
+3. Создание внешнего ключа id_group в таблице students
+
+ALTER TABLE students ADD INDEX (id_group)
+
+ALTER TABLE students
+ADD CONSTRAINT c_group_id
+FOREIGN KEY (id_group)
+REFERENCES `groups`(id_group)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+4. Создание таблицы teachers
+CREATE TABLE teachers (
+id_teacher INT(4) AUTO_INCREMENT,
+name VARCHAR(35) NOT NULL,
+surname VARCHAR(35) NOT NULL,
+age INT NOT NULL,
+PRIMARY KEY (id_teacher)
+)
+CHARACTER SET utf8 COLLATE utf8_general_ci
+
+5. Создание таблицы subjects
+CREATE TABLE subjects (
+id_subject INT(4) AUTO_INCREMENT,
+name VARCHAR(60) NOT NULL,
+PRIMARY KEY (id_subject)
+)
+CHARACTER SET utf8 COLLATE utf8_general_ci
+
+6. Создание таблицы classrooms
+CREATE TABLE classrooms (
+id_classroom INT(4) AUTO_INCREMENT,
+сlassroom VARCHAR (20) NOT NULL,
+PRIMARY KEY (id_classroom)
+)
+CHARACTER SET utf8 COLLATE utf8_general_ci
+
+7. Создание таблицы teacher_subject
+CREATE TABLE teacher_subject_group (
+id_teacher_subject_group INT(4) AUTO_INCREMENT,
+id_teacher INT(4) NOT NULL,
+id_subject INT(4) NOT NULL,
+id_group INT(4) NOT NULL,
+PRIMARY KEY (id_teacher_subject_group)
+)
+CHARACTER SET utf8 COLLATE utf8_general_ci
+
+8. Создание внешних ключей id_teacher, id_subject, id_group в таблице teacher_subject
+
+ALTER TABLE teacher_subject_group ADD INDEX (id_teacher)
+    ALTER TABLE teacher_subject_group
+    ADD CONSTRAINT c_teacher_id
+    FOREIGN KEY (id_teacher)
+    REFERENCES `teachers`(id_teacher)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+ALTER TABLE teacher_subject_group ADD INDEX (id_subject)
+    ALTER TABLE teacher_subject_group
+    ADD CONSTRAINT c_subject_id
+    FOREIGN KEY (id_subject)
+    REFERENCES `subjects`(id_subject)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+ALTER TABLE teacher_subject_group ADD INDEX (id_group)
+    ALTER TABLE teacher_subject_group
+    ADD CONSTRAINT tsg_group_id
+    FOREIGN KEY (id_group)
+    REFERENCES `groups`(id_group)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+9. Создание таблицы schedule (таблица занятий - расписание)
+
+CREATE TABLE schedule (
+id_schedule INT(4) AUTO_INCREMENT,
+id_teacher_subject_group INT(4) NOT NULL,
+weekday VARCHAR(10) NOT NULL,
+time TIME NOT NULL,
+id_classroom INT(4) NOT NULL,
+PRIMARY KEY (id_schedule)
+)
+CHARACTER SET utf8 COLLATE utf8_general_ci
+
+10. Создание внешних ключей id_teacher_subject_group, id_classroom в таблице schedule
+
+ALTER TABLE schedule ADD INDEX (id_teacher_subject_group)
+
+        ALTER TABLE schedule
+        ADD CONSTRAINT s_id_teacher_subject_group
+        FOREIGN KEY (id_teacher_subject_group)
+        REFERENCES `teacher_subject_group`(id_teacher_subject_group)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE;
+
+ALTER TABLE schedule ADD INDEX (id_classroom)
+
+    ALTER TABLE schedule
+    ADD CONSTRAINT s_id_classroom
+    FOREIGN KEY (id_classroom)
+    REFERENCES `classrooms`(id_classroom)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+11. Создание таблицы score
+
+CREATE TABLE score (
+id_score INT(4) AUTO_INCREMENT,
+id_schedule INT(4) NOT NULL,
+id_student INT(4) NOT NULL,
+score VARCHAR(10) NOT NULL,
+PRIMARY KEY (id_score)
+)
+CHARACTER SET utf8 COLLATE utf8_general_ci
+
+12. Создание внешних ключей id_schedule, id_student в таблице score
+
+ALTER TABLE score ADD INDEX (id_schedule)
+
+    ALTER TABLE score
+    ADD CONSTRAINT s_id_schedule
+    FOREIGN KEY (id_schedule)
+    REFERENCES `schedule`(id_schedule)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+ALTER TABLE score ADD INDEX (id_student)
+
+    ALTER TABLE score
+    ADD CONSTRAINT s_id_student
+    FOREIGN KEY (id_student)
+    REFERENCES `students`(id_student)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+13.
+
+
+

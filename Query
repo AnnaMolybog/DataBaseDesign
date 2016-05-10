@@ -1,0 +1,94 @@
+
+
+1. Выбрать всех студентов
+SELECT s.name, s.surname, s.age, g.name
+FROM students AS s
+JOIN groups as g
+ON s.id_group = g.id_group
+
+2. Выбрать все группы
+SELECT g.name, g.num_of_students FROM groups AS g
+
+3. Выбрать всех преподавателей
+SELECT DISTINCT t.name, t.surname, t.age, s.name
+FROM teacher_subject_group AS tsg
+JOIN subjects AS s
+ON tsg.id_subject = s.id_subject
+JOIN teachers AS t
+ON tsg.id_teacher = t.id_teacher
+GROUP BY tsg.id_teacher_subject_group
+ORDER BY t.id_teacher
+
+4. Выбрать все занятия
+SELECT s.name, sch.weekday, sch.time, g.name, c.сlassroom
+FROM schedule AS sch
+JOIN classrooms AS c
+ON sch.id_classroom = c.id_classroom
+JOIN
+(teacher_subject_group AS tsg
+JOIN subjects AS s
+ON tsg.id_subject = s.id_subject
+JOIN groups AS g
+ON tsg.id_group = g.id_group)
+ON sch.id_teacher_subject_group  = tsg.id_teacher_subject_group
+Group by sch.id_schedule
+
+5. Студентов какой-то одной группы
+SELECT s.name, s.surname, s.age, g.name
+FROM students AS s
+JOIN groups as g
+ON s.id_group = g.id_group
+WHERE s.id_group = 1
+
+6. Оценки студентов за одно занятие
+SELECT sch.weekday, sch.time, s.name as subject, g.name as group_name, st.name as student_name, st.surname as student_surname, sc.score
+FROM score AS sc
+JOIN schedule AS sch
+ON sc.id_schedule  = sch.id_schedule
+JOIN
+(teacher_subject_group AS tsg
+JOIN subjects AS s
+ON tsg.id_subject = s.id_subject
+JOIN groups AS g
+ON tsg.id_group = g.id_group)
+ON sch.id_teacher_subject_group  = tsg.id_teacher_subject_group
+JOIN students AS st
+ON sc.id_student = st.id_student
+WHERE sch.time = '00:00:09' and g.id_group = 1
+Group by sc.id_score
+
+7. Список оценок выбранного студента а также занятие за которое он получил эту оценку
+
+SELECT sch.weekday, sch.time, s.name as subject, g.name as group_name, st.name as student_name, st.surname as student_surname, sc.score
+FROM score AS sc
+JOIN schedule AS sch
+ON sc.id_schedule = sch.id_schedule
+JOIN
+(teacher_subject_group AS tsg
+JOIN teachers AS t
+ON tsg.id_teacher = t.id_teacher
+JOIN subjects AS s
+ON tsg.id_subject = s.id_subject
+JOIN groups AS g
+ON tsg.id_group = g.id_group)
+ON sch.id_teacher_subject_group  = tsg.id_teacher_subject_group
+JOIN students AS st
+ON sc.id_student = st.id_student
+WHERE st.id_student = 1
+Group by sc.id_score
+
+8. Выбрать все занятия которые преподает выбранный преподаватель
+
+SELECT sch.weekday, sch.time, s.name as subject, t.name as teacher_name, t.surname as teacher_surname, g.name as group_name
+FROM schedule AS sch
+JOIN
+(teacher_subject_group AS tsg
+JOIN teachers AS t
+ON tsg.id_teacher = t.id_teacher
+JOIN subjects AS s
+ON tsg.id_subject = s.id_subject
+JOIN groups AS g
+ON tsg.id_group = g.id_group)
+ON sch.id_teacher_subject_group  = tsg.id_teacher_subject_group
+WHERE t.id_teacher = 1
+Group by sch.id_schedule
